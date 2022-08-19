@@ -1,11 +1,45 @@
+Каталог
+Моё обучение
+Преподавание
+Поиск…
+Русский
+User avatar1
+Решения задач урока Сравнения __eq__, __ne__, __lt__, __gt__ и другие из курса Добрый, добрый Python ООП - обучающий курс от Сергея Балакирева
+
+
+Пользователь
+Оценка
+User avatar
+Дернов Иван
+#735288511
+7 минут назад	0
+User avatar
+Дернов Иван
+#735285793
+9 минут назад	0
+User avatar
+Дернов Иван
+#735281210
+13 минут назад	0
+User avatar
+Дернов Иван
+#735237331
+1 час назад	3
+Решения
+User avatarДернов Иван: #735237331 верно
+19 августа 2022 г., 13:50
+
 class Dimensions:
     MIN_DIMENSION = 10
     MAX_DIMENSION = 10000
 
     def __init__(self, a, b, c):
-        self.__a = a
-        self.__b = b
-        self.__c = c
+        if isinstance(a, (int, float)) and self.MIN_DIMENSION <= a <= self.MAX_DIMENSION:
+            self.__a = a
+        if isinstance(b, (int, float)) and self.MIN_DIMENSION <= b <= self.MAX_DIMENSION:
+            self.__b = b
+        if isinstance(c, (int, float)) and self.MIN_DIMENSION <= c <= self.MAX_DIMENSION:
+            self.__c = c
 
     @property
     def a(self):
@@ -13,11 +47,12 @@ class Dimensions:
 
     @a.setter
     def a(self, a):
+        #print("setter_a")
         if type(a) in (int, float) and self.MIN_DIMENSION <= a <= self.MAX_DIMENSION:
             self.__a = a
         else:
-            print("Size Error")
-            return 0
+            #print("Size Error")
+            raise TypeError
 
     @property
     def b(self):
@@ -27,6 +62,9 @@ class Dimensions:
     def b(self, b):
         if type(b) in (int, float) and self.MIN_DIMENSION <= b <= self.MAX_DIMENSION:
             self.__b = b
+        else:
+            #print("Size Error")
+            raise TypeError
 
     @property
     def c(self):
@@ -36,19 +74,58 @@ class Dimensions:
     def c(self, c):
         if type(c) in (int, float) and self.MIN_DIMENSION <= c <= self.MAX_DIMENSION:
             self.__c = c
+        else:
+            #print("Size Error")
+            raise TypeError
 
     def volume(self):
         return self.a * self.b * self.c
 
+    @classmethod
+    def verify_data(cls, other):
+        if not isinstance(other, Dimensions):
+            raise TypeError("Операнд справа должен иметь тип Dimentions")
+        return other
+
     def __eq__(self, other):
-        return self.volume() == other.volume()
+        sc = self.verify_data(other)
+        return self.volume() == sc.volume()
+
+    def __lt__(self, other):
+        sc = self.verify_data(other)
+        return self.volume() < sc.volume()
+
+    def __gt__(self, other):
+        sc = self.verify_data(other)
+        return self.volume() > sc.volume()
+
+    def __le__(self, other):
+        sc = self.verify_data(other)
+        return self.volume() <= sc.volume()
+
+    def __ge__(self, other):
+        sc = self.verify_data(other)
+        return self.volume() >= sc.volume()
+
+class ShopItem:
+    def __init__(self, name, price, dim):
+        self.name = name
+        if isinstance(price, (int, float)):
+            self.price = price
+        if isinstance(dim, Dimensions):
+            self.dim = dim
+    def __str__(self):
+        return f'{self.name} '
 
 
-d = Dimensions("d", 2, 2)
-s = Dimensions(2, 2, 2)
-f = Dimensions(1, 2, 2)
-d.a = 1000000
-print(d.a)
-# print(s.c)
-print(d == s)
+
+trainers = ShopItem('кеды', 1024, Dimensions(40, 30, 120))
+#print(trainers)
+umbrella = ShopItem('зонт', 500.24, Dimensions(10, 20, 50))
+fridge = ShopItem('холодильник', 40000, Dimensions(2000, 600, 500))
+chair = ShopItem('табуретка', 2000.99, Dimensions(500, 200, 200))
+lst_shop = (trainers, umbrella, fridge, chair)
+lst_shop_sorted = sorted(lst_shop, key=lambda x: x.dim.volume())
+#print(*lst_shop_sorted)
+
 
